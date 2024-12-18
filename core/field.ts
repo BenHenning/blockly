@@ -19,7 +19,6 @@ import './events/events_block_change.js';
 import type {Block} from './block.js';
 import type {BlockSvg} from './block_svg.js';
 import * as browserEvents from './browser_events.js';
-import * as dropDownDiv from './dropdowndiv.js';
 import {EventType} from './events/type.js';
 import * as eventUtils from './events/utils.js';
 import type {Input} from './inputs/input.js';
@@ -304,7 +303,7 @@ export abstract class Field<T = any>
       // Field has already been initialized once.
       return;
     }
-    this.fieldGroup_ = dom.createSvgElement(Svg.G, {});
+    this.fieldGroup_ = dom.createSvgElement(Svg.G, {'role': 'none'});
     if (!this.isVisible()) {
       this.fieldGroup_.style.display = 'none';
     }
@@ -375,6 +374,8 @@ export abstract class Field<T = any>
       Svg.TEXT,
       {
         'class': 'blocklyText',
+        // 'tabindex': 0,
+        'role': 'caption',
       },
       this.fieldGroup_,
     );
@@ -520,7 +521,7 @@ export abstract class Field<T = any>
    * @internal
    */
   dispose() {
-    dropDownDiv.hideIfOwner(this);
+    // dropDownDiv.hideIfOwner(this);
     WidgetDiv.hideIfOwner(this);
 
     if (!this.getSourceBlock()?.isDeadOrDying()) {

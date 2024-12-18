@@ -18,6 +18,7 @@ import {Coordinate} from './utils/coordinate.js';
 import * as dom from './utils/dom.js';
 import type {Size} from './utils/size.js';
 import * as style from './utils/style.js';
+import * as idGenerator from './utils/idgenerator.js';
 
 /**
  * A basic menu class.
@@ -64,8 +65,12 @@ export class Menu {
   /** ARIA name for this menu. */
   private roleName: aria.Role | null = null;
 
+  public id: string;
+
   /** Constructs a new Menu instance. */
-  constructor() {}
+  constructor() {
+    this.id = idGenerator.getNextUniqueId();
+  }
 
   /**
    * Add a new menu item to the bottom of this menu.
@@ -85,9 +90,11 @@ export class Menu {
    */
   render(container: Element): HTMLDivElement {
     const element = document.createElement('div');
+    element.id = this.id;
     // goog-menu is deprecated, use blocklyMenu.  May 2020.
     element.className = 'blocklyMenu goog-menu blocklyNonSelectable';
-    element.tabIndex = 0;
+    element.setAttribute('focusable', 'true');
+    // element.tabIndex = 0;
     if (this.roleName) {
       aria.setRole(element, this.roleName);
     }

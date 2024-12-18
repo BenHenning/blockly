@@ -12,7 +12,6 @@
 // Former goog.module ID: Blockly.HorizontalFlyout
 
 import * as browserEvents from './browser_events.js';
-import * as dropDownDiv from './dropdowndiv.js';
 import {Flyout, FlyoutItem} from './flyout_base.js';
 import type {FlyoutButton} from './flyout_button.js';
 import type {Options} from './options.js';
@@ -21,7 +20,6 @@ import {Scrollbar} from './scrollbar.js';
 import type {Coordinate} from './utils/coordinate.js';
 import {Rect} from './utils/rect.js';
 import * as toolbox from './utils/toolbox.js';
-import * as WidgetDiv from './widgetdiv.js';
 
 /**
  * Class for a flyout.
@@ -238,10 +236,8 @@ export class HorizontalFlyout extends Flyout {
 
       const pos = viewMetrics.left - scrollMetrics.left + delta;
       this.workspace_.scrollbar?.setX(pos);
-      // When the flyout moves from a wheel event, hide WidgetDiv and
-      // dropDownDiv.
-      WidgetDiv.hideIfOwnerIsInWorkspace(this.workspace_);
-      dropDownDiv.hideWithoutAnimation();
+      // When the flyout moves from a wheel event hide menus/popups.
+      this.workspace_.hideChaff();
     }
     // Don't scroll the page.
     e.preventDefault();

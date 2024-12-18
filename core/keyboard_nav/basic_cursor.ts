@@ -37,11 +37,13 @@ export class BasicCursor extends Cursor {
    */
   override next(): ASTNode | null {
     const curNode = this.getCurNode();
+    console.log('Basic.next(), current: ', curNode);
     if (!curNode) {
       return null;
     }
     const newNode = this.getNextNode_(curNode, this.validNode_);
 
+    console.log('Basic.next(), has new node: ', !!newNode);
     if (newNode) {
       this.setCurNode(newNode);
     }

@@ -14,7 +14,7 @@
 // Former goog.module ID: Blockly.FieldDropdown
 
 import type {BlockSvg} from './block_svg.js';
-import * as dropDownDiv from './dropdowndiv.js';
+import {DropDownDiv} from './dropdowndiv2.js';
 import {
   Field,
   FieldConfig,
@@ -31,6 +31,7 @@ import * as parsing from './utils/parsing.js';
 import * as utilsString from './utils/string.js';
 import * as style from './utils/style.js';
 import {Svg} from './utils/svg.js';
+import type {WorkspaceSvg} from './workspace_svg.js';
 
 /**
  * Class for an editable dropdown field.
@@ -63,6 +64,8 @@ export class FieldDropdown extends Field<string> {
 
   /** SVG based arrow element. */
   private svgArrow: SVGElement | null = null;
+
+  private dropDownDiv: DropDownDiv = DropDownDiv.createDropDownDiv();
 
   /**
    * Serializable fields are saved by the serializer, non-serializable fields
@@ -213,6 +216,8 @@ export class FieldDropdown extends Field<string> {
     if (this.borderRect_) {
       dom.addClass(this.borderRect_, 'blocklyDropdownRect');
     }
+
+    this.dropdownCreate();
   }
 
   /**
@@ -230,7 +235,8 @@ export class FieldDropdown extends Field<string> {
 
   /** Create a tspan based arrow. */
   protected createTextArrow_() {
-    this.arrow = dom.createSvgElement(Svg.TSPAN, {}, this.textElement_);
+    // Exclude the tspan from the accessibility node tree since the arrow doesn't need to be read.
+    this.arrow = dom.createSvgElement(Svg.TSPAN, {"aria-hidden": "true"}, this.textElement_);
     this.arrow!.appendChild(
       document.createTextNode(
         this.getSourceBlock()?.RTL
@@ -276,26 +282,31 @@ export class FieldDropdown extends Field<string> {
     if (!block) {
       throw new UnattachedFieldError();
     }
-    this.dropdownCreate();
     if (e && typeof e.clientX === 'number') {
       this.menu_!.openingCoords = new Coordinate(e.clientX, e.clientY);
     } else {
       this.menu_!.openingCoords = null;
     }
 
+    // TODO: This won't work for images as-is.
+    this.getTextElement().setAttribute('aria-expanded', 'true');
+
     // Remove any pre-existing elements in the dropdown.
-    dropDownDiv.clearContent();
+    this.dropDownDiv.clearContent();
     // Element gets created in render.
-    const menuElement = this.menu_!.render(dropDownDiv.getContentDiv());
+    const menuElement = this.menu_!.render(this.dropDownDiv.getContentDiv());
     dom.addClass(menuElement, 'blocklyDropdownMenu');
 
     if (this.getConstants()!.FIELD_DROPDOWN_COLOURED_DIV) {
       const primaryColour = block.getColour();
       const borderColour = (this.sourceBlock_ as BlockSvg).style.colourTertiary;
-      dropDownDiv.setColour(primaryColour, borderColour);
+      this.dropDownDiv.setColour(primaryColour, borderColour);
     }
 
-    dropDownDiv.showPositionedByField(this, this.dropdownDispose_.bind(this));
+    this.dropDownDiv.showPositionedByField(this, () => {
+      // TODO: This won't work for images as-is.
+      this.getTextElement().setAttribute('aria-expanded', 'false');
+    });//, this.dropdownDispose_.bind(this));
 
     // Focusing needs to be handled after the menu is rendered and positioned.
     // Otherwise it will cause a page scroll to get the misplaced menu in
@@ -306,7 +317,7 @@ export class FieldDropdown extends Field<string> {
       this.menu_!.setHighlighted(this.selectedMenuItem);
       style.scrollIntoContainerView(
         this.selectedMenuItem.getElement()!,
-        dropDownDiv.getContentDiv(),
+        this.dropDownDiv.getContentDiv(),
         true,
       );
     }
@@ -369,7 +380,7 @@ export class FieldDropdown extends Field<string> {
    * @param menuItem The MenuItem selected within menu.
    */
   private handleMenuActionEvent(menuItem: MenuItem) {
-    dropDownDiv.hideIfOwner(this, true);
+    this.dropDownDiv.hideIfOwner(this, true);
     this.onItemSelected_(this.menu_ as Menu, menuItem);
   }
 
@@ -488,6 +499,8 @@ export class FieldDropdown extends Field<string> {
 
   /** Draws the border with the correct width. */
   protected override render_() {
+    (this.sourceBlock_?.workspace as WorkspaceSvg).trackDropDownDiv(this.dropDownDiv);
+
     // Hide both elements.
     this.getTextContent().nodeValue = '';
     this.imageElement!.style.display = 'none';
@@ -572,6 +585,11 @@ export class FieldDropdown extends Field<string> {
     const textElement = this.getTextElement();
     dom.addClass(textElement, 'blocklyDropdownText');
     textElement.setAttribute('text-anchor', 'start');
+    textElement.setAttribute('role', 'combobox');
+    textElement.setAttribute('focusable', 'true');
+    textElement.setAttribute('aria-controls', this.menu_!.id);
+    textElement.setAttribute('aria-haspopup', 'listbox');
+    textElement.setAttribute('aria-expanded', 'false');
 
     // Height and width include the border rect.
     const hasBorder = !!this.borderRect_;

@@ -178,7 +178,7 @@ export class Toolbox
     const container = this.createContainer_();
 
     this.contentsDiv_ = this.createContentsContainer_();
-    this.contentsDiv_.tabIndex = 0;
+    // this.contentsDiv_.tabIndex = 0;
     aria.setRole(this.contentsDiv_, aria.Role.TREE);
     container.appendChild(this.contentsDiv_);
 

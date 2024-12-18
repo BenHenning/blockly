@@ -201,7 +201,13 @@ export class BlockSvg
       throw TypeError('Cannot create a rendered block in a headless workspace');
     }
     this.workspace = workspace;
-    this.svgGroup_ = dom.createSvgElement(Svg.G, {});
+    this.svgGroup_ = dom.createSvgElement(Svg.G, {
+      // 'tabindex': 0,
+      'role': 'region',
+      'aria-label': 'Block',
+      // TODO: Refine this.
+      'focusable': 'true',
+    });
 
     /** A block style object. */
     this.style = workspace.getRenderer().getConstants().getBlockStyle(null);
@@ -219,6 +225,8 @@ export class BlockSvg
     this.svgGroup_.setAttribute('data-id', this.id);
 
     this.doInit_();
+
+    this.svgGroup_.setAttribute('aria-label', 'Block ' + this.toString(undefined, ''));
   }
 
   /**

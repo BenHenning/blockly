@@ -32,7 +32,7 @@ import {
   ContextMenuOption,
   ContextMenuRegistry,
 } from './contextmenu_registry.js';
-import * as dropDownDiv from './dropdowndiv.js';
+import {DropDownDiv} from './dropdowndiv2.js';
 import {EventType} from './events/type.js';
 import * as eventUtils from './events/utils.js';
 import type {FlyoutButton} from './flyout_button.js';
@@ -277,6 +277,8 @@ export class WorkspaceSvg extends Workspace implements IASTNodeLocationSvg {
   private audioManager: WorkspaceAudio;
   private grid: Grid | null;
   private markerManager: MarkerManager;
+
+  private readonly dropDownDivs: DropDownDiv[] = [];
 
   /**
    * Map from function names to callbacks, for deciding what to do when a
@@ -2382,6 +2384,14 @@ export class WorkspaceSvg extends Workspace implements IASTNodeLocationSvg {
     return this.grid;
   }
 
+  trackDropDownDiv(dropDownDiv: DropDownDiv) {
+    this.dropDownDivs.push(dropDownDiv);
+  }
+
+  stopTrackingDropDownDiv(dropDownDiv: DropDownDiv) {
+    this.dropDownDivs.splice(this.dropDownDivs.indexOf(dropDownDiv), 1);
+  }
+
   /**
    * Close tooltips, context menus, dropdown selections, etc.
    *
@@ -2391,9 +2401,19 @@ export class WorkspaceSvg extends Workspace implements IASTNodeLocationSvg {
   hideChaff(onlyClosePopups = false) {
     Tooltip.hide();
     WidgetDiv.hideIfOwnerIsInWorkspace(this);
-    dropDownDiv.hideWithoutAnimation();
+    this.dropDownDivs.forEach((dropDownDiv) => dropDownDiv.hideWithoutAnimation());
 
     this.hideComponents(onlyClosePopups);
+  }
+
+  respondToWindowResize() {
+    // Don't hide all the chaff. Leave the dropdown and widget divs open if
+    // possible.
+    Tooltip.hide();
+    this.hideComponents(true);
+    this.dropDownDivs.forEach((dropDownDiv) => dropDownDiv.repositionForWindowResize());
+    WidgetDiv.repositionForWindowResize();
+    common.svgResize(this);
   }
 
   /**

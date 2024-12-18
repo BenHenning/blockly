@@ -11,7 +11,6 @@ import * as browserEvents from './browser_events.js';
 import * as bumpObjects from './bump_objects.js';
 import * as common from './common.js';
 import * as Css from './css.js';
-import * as dropDownDiv from './dropdowndiv.js';
 import {Grid} from './grid.js';
 import {Msg} from './msg.js';
 import {Options} from './options.js';
@@ -57,7 +56,7 @@ export function inject(
   if (opt_options?.rtl) {
     dom.addClass(subContainer, 'blocklyRTL');
   }
-  subContainer.tabIndex = 0;
+  // subContainer.tabIndex = 0;
   aria.setState(subContainer, aria.State.LABEL, Msg['WORKSPACE_ARIA_LABEL']);
 
   containerElement!.appendChild(subContainer);
@@ -117,7 +116,7 @@ function createDom(container: Element, options: Options): SVGElement {
       'xmlns:xlink': dom.XLINK_NS,
       'version': '1.1',
       'class': 'blocklySvg',
-      'tabindex': '0',
+      // 'tabindex': '0',
     },
     container,
   );
@@ -192,7 +191,7 @@ function createMainWorkspace(
   // The SVG is now fully assembled.
   common.svgResize(mainWorkspace);
   WidgetDiv.createDom();
-  dropDownDiv.createDom();
+  // dropDownDiv.createDom();
   Tooltip.createDom();
   return mainWorkspace;
 }
@@ -223,13 +222,7 @@ function init(mainWorkspace: WorkspaceSvg) {
     'resize',
     null,
     function () {
-      // Don't hide all the chaff. Leave the dropdown and widget divs open if
-      // possible.
-      Tooltip.hide();
-      mainWorkspace.hideComponents(true);
-      dropDownDiv.repositionForWindowResize();
-      WidgetDiv.repositionForWindowResize();
-      common.svgResize(mainWorkspace);
+      mainWorkspace.respondToWindowResize();
       bumpObjects.bumpTopObjectsIntoBounds(mainWorkspace);
     },
   );

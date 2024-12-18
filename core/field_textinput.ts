@@ -64,6 +64,13 @@ export class FieldTextInput extends FieldInput<string> {
     return `${newValue}`;
   }
 
+  protected override render_() {
+    const textElement = this.getTextElement();
+    textElement.setAttribute('role', 'textbox');
+    textElement.setAttribute('contenteditable', 'true');
+    super.render_();
+  }
+
   /**
    * Construct a FieldTextInput from a JSON arg object,
    * dereferencing any string table references.

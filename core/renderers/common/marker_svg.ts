@@ -123,7 +123,10 @@ export class MarkerSvg {
   createDom(): SVGElement {
     const className = this.isCursor() ? CURSOR_CLASS : MARKER_CLASS;
 
-    this.svgGroup_ = dom.createSvgElement(Svg.G, {'class': className});
+    this.svgGroup_ = dom.createSvgElement(Svg.G, {
+      'class': className,
+      // 'tabIndex': 0,
+    });
 
     this.createDomInternal_();
     return this.svgGroup_;

@@ -14,6 +14,8 @@
 
 import type {MarkerSvg} from '../renderers/common/marker_svg.js';
 import type {ASTNode} from './ast_node.js';
+// TODO: This is probably a dependency inversion--this needs to be done more cleanly.
+import type {BlockSvg} from '../block_svg.js';
 
 /**
  * Class for a marker.
@@ -77,11 +79,15 @@ export class Marker {
    * @param newNode The new location of the marker.
    */
   setCurNode(newNode: ASTNode) {
+    console.log('setCurNode');
     const oldNode = this.curNode;
     this.curNode = newNode;
     if (this.drawer) {
       this.drawer.draw(oldNode, this.curNode);
     }
+
+    console.log('Focus', (newNode.getSourceBlock() as BlockSvg).getSvgRoot());
+    (newNode.getSourceBlock() as BlockSvg).getSvgRoot().focus();
   }
 
   /**

@@ -42,7 +42,6 @@ import {DeleteArea} from './delete_area.js';
 import * as dialog from './dialog.js';
 import {DragTarget} from './drag_target.js';
 import * as dragging from './dragging.js';
-import * as dropDownDiv from './dropdowndiv.js';
 import * as Events from './events/events.js';
 import * as Extensions from './extensions.js';
 import {
@@ -469,7 +468,6 @@ export {
   utils,
   zelos,
 };
-export const DropDownDiv = dropDownDiv;
 export {
   CodeGenerator,
   Field,

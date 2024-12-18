@@ -307,6 +307,13 @@ export class FieldNumber extends FieldInput<number> {
     return htmlInput;
   }
 
+  protected override render_() {
+    const textElement = this.getTextElement();
+    textElement.setAttribute('role', 'textbox');
+    textElement.setAttribute('contenteditable', 'true');
+    super.render_();
+  }
+
   /**
    * Construct a FieldNumber from a JSON arg object.
    *

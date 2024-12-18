@@ -50,7 +50,10 @@ export abstract class Icon implements IIcon {
     if (this.svgRoot) return; // The icon has already been initialized.
 
     const svgBlock = this.sourceBlock as BlockSvg;
-    this.svgRoot = dom.createSvgElement(Svg.G, {'class': 'blocklyIconGroup'});
+    this.svgRoot = dom.createSvgElement(Svg.G, {
+      'class': 'blocklyIconGroup',
+      // 'tabIndex': 0,
+    });
     svgBlock.getSvgRoot().appendChild(this.svgRoot);
     this.updateSvgRootOffset();
     browserEvents.conditionalBind(

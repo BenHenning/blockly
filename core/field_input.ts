@@ -18,7 +18,6 @@ import {BlockSvg} from './block_svg.js';
 import * as browserEvents from './browser_events.js';
 import * as bumpObjects from './bump_objects.js';
 import * as dialog from './dialog.js';
-import * as dropDownDiv from './dropdowndiv.js';
 import {EventType} from './events/type.js';
 import * as eventUtils from './events/utils.js';
 import {
@@ -553,17 +552,17 @@ export abstract class FieldInput<T extends InputTypes> extends Field<
   protected onHtmlInputKeyDown_(e: KeyboardEvent) {
     if (e.key === 'Enter') {
       WidgetDiv.hideIfOwner(this);
-      dropDownDiv.hideWithoutAnimation();
+      // dropDownDiv.hideWithoutAnimation();
     } else if (e.key === 'Escape') {
       this.setValue(
         this.htmlInput_!.getAttribute('data-untyped-default-value'),
         false,
       );
       WidgetDiv.hideIfOwner(this);
-      dropDownDiv.hideWithoutAnimation();
+      // dropDownDiv.hideWithoutAnimation();
     } else if (e.key === 'Tab') {
       WidgetDiv.hideIfOwner(this);
-      dropDownDiv.hideWithoutAnimation();
+      // dropDownDiv.hideWithoutAnimation();
       (this.sourceBlock_ as BlockSvg).tab(this, !e.shiftKey);
       e.preventDefault();
     }

@@ -21,7 +21,6 @@ import * as browserEvents from './browser_events.js';
 import {RenderedWorkspaceComment} from './comments.js';
 import * as common from './common.js';
 import {config} from './config.js';
-import * as dropDownDiv from './dropdowndiv.js';
 import {EventType} from './events/type.js';
 import * as eventUtils from './events/utils.js';
 import type {Field} from './field.js';
@@ -171,7 +170,7 @@ export class Gesture {
    * act on their events, and some fields care about who owns
    * the dropdown.
    */
-  currentDropdownOwner: Field | null = null;
+  // currentDropdownOwner: Field | null = null;
 
   /**
    * @param e The event that kicked off this gesture.
@@ -403,7 +402,7 @@ export class Gesture {
     }
 
     // Keep track of which field owns the dropdown before we close it.
-    this.currentDropdownOwner = dropDownDiv.getOwner();
+    // this.currentDropdownOwner = dropDownDiv.getOwner();
     // Hide chaff also hides the flyout, so don't do it if the click is in a
     // flyout.
     this.startWorkspace_.hideChaff(!!this.flyout);
@@ -867,10 +866,10 @@ export class Gesture {
 
     // Only show the editor if the field's editor wasn't already open
     // right before this gesture started.
-    const dropdownAlreadyOpen = this.currentDropdownOwner === this.startField;
-    if (!dropdownAlreadyOpen) {
+    // const dropdownAlreadyOpen = this.currentDropdownOwner === this.startField;
+    // if (!dropdownAlreadyOpen) {
       this.startField.showEditor(this.mostRecentEvent);
-    }
+    // }
     this.bringBlockToFront();
   }
 

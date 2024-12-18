@@ -142,6 +142,7 @@ export class FieldImage extends Field<string> {
         'height': this.imageHeight + 'px',
         'width': this.size_.width + 'px',
         'alt': this.altText,
+        // 'tabindex': 0,
       },
       this.fieldGroup_,
     );

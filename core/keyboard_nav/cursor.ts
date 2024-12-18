@@ -35,6 +35,7 @@ export class Cursor extends Marker {
    */
   next(): ASTNode | null {
     const curNode = this.getCurNode();
+    console.log('next(), current: ', curNode);
     if (!curNode) {
       return null;
     }
@@ -49,6 +50,7 @@ export class Cursor extends Marker {
       newNode = newNode.next();
     }
 
+    console.log('next(), has new node: ', !!newNode);
     if (newNode) {
       this.setCurNode(newNode);
     }
