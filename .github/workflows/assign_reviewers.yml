@@ -5,11 +5,8 @@ name: Assign requested reviewers
 #
 # See https://github.com/google/blockly/issues/5643 for more
 # information on why this was added.
-#
-# N.B.: Runs with a read-write repo token.  Do not check out the
-# submitted branch!
 on:
-  pull_request_target:
+  pull_request:
     types: [review_requested]
 
 jobs:
