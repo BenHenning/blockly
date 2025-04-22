@@ -6,7 +6,7 @@ name: Assign requested reviewers
 # See https://github.com/google/blockly/issues/5643 for more
 # information on why this was added.
 on:
-  pull_request:
+  pull_request_target:
     types: [review_requested]
 
 jobs:
