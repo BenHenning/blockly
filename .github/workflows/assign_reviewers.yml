@@ -13,9 +13,8 @@ jobs:
   requested-reviewer:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       issues: write
-      repository-projects: read
       pull-requests: write
     steps:
       - name: Assign requested reviewer
