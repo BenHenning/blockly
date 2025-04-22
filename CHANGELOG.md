@@ -1,5 +1,7 @@
 # Changelog
 
+Random change for PR testing.
+
 ## [8.0.0](https://github.com/google/blockly/compare/blockly-v7.20211209.0...blockly-v8.0.0) (2022-03-31)
 
 
