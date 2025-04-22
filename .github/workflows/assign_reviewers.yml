@@ -22,7 +22,6 @@ jobs:
       id-token: write
       issues: write
       repository-projects: write
-      models: write
       packages: write
       pages: write
       pull-requests: write
