@@ -55,7 +55,8 @@ import type {IPathObject} from './renderers/common/i_path_object.js';
 import * as blocks from './serialization/blocks.js';
 import type {BlockStyle} from './theme.js';
 import * as Tooltip from './tooltip.js';
-import {aria, idGenerator} from './utils.js';
+import {idGenerator} from './utils.js';
+import * as aria from './utils/aria.js';
 import {Coordinate} from './utils/coordinate.js';
 import * as dom from './utils/dom.js';
 import {Rect} from './utils/rect.js';
@@ -168,6 +169,8 @@ export class BlockSvg
   /** Whether this block is currently being dragged. */
   private dragging = false;
 
+  public currentConnectionCandidate: RenderedConnection | null = null;
+
   /**
    * The location of the top left of this block (in workspace coordinates)
    * relative to either its parent block, or the workspace origin if it has no
@@ -227,6 +230,60 @@ export class BlockSvg
     aria.setState(this.getFocusableElement(), aria.State.LABEL, this.getAriaLabel());
   }
 
+  private recomputeAriaLabel() {
+    aria.setState(
+      this.getFocusableElement(),
+      aria.State.LABEL,
+      this.computeAriaLabel(),
+    );
+  }
+
+  private computeAriaLabel(): string {
+    // Guess the block's aria label based on its field labels.
+    if (this.isShadow()) {
+      // TODO: Shadows may have more than one field.
+      // Shadow blocks are best represented directly by their field since they
+      // effectively operate like a field does for keyboard navigation purposes.
+      const field = Array.from(this.getFields())[0];
+      return (
+        aria.getState(field.getFocusableElement(), aria.State.LABEL) ??
+        'Unknown?'
+      );
+    }
+
+    const fieldLabels = [];
+    for (const field of this.getFields()) {
+      if (field instanceof FieldLabel) {
+        fieldLabels.push(field.getText());
+      }
+    }
+    return fieldLabels.join(' ');
+  }
+
+  collectSiblingBlocks(surroundParent: BlockSvg | null): BlockSvg[] {
+    // NOTE TO DEVELOPERS: it's very important that these are NOT sorted. The
+    // returned list needs to be relatively stable for consistency block indexes
+    // read out to users via screen readers.
+    if (surroundParent) {
+      // Start from the first sibling and iterate in navigation order.
+      const firstSibling: BlockSvg = surroundParent.getChildren(false)[0];
+      const siblings: BlockSvg[] = [firstSibling];
+      let nextSibling: BlockSvg | null = firstSibling;
+      while ((nextSibling = nextSibling.getNextBlock())) {
+        siblings.push(nextSibling);
+      }
+      return siblings;
+    } else {
+      // For top-level blocks, simply return those from the workspace.
+      return this.workspace.getTopBlocks(false);
+    }
+  }
+
+  computeLevelInWorkspace(): number {
+    const surroundParent = this.getSurroundParent();
+    return surroundParent ? surroundParent.computeLevelInWorkspace() + 1 : 0;
+  }
+
   /**
    * Create and initialize the SVG representation of the block.
    * May be called more than once.
@@ -275,12 +332,14 @@ export class BlockSvg
   select() {
     this.addSelect();
     common.fireSelectedEvent(this);
+    aria.setState(this.getFocusableElement(), aria.State.SELECTED, true);
   }
 
   /** Unselects this block. Unhighlights the block visually. */
   unselect() {
     this.removeSelect();
     common.fireSelectedEvent(null);
+    aria.setState(this.getFocusableElement(), aria.State.SELECTED, false);
   }
 
   private getParentAriaGroup(): Element {

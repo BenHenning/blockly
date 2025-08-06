@@ -55,6 +55,12 @@ export function inject(
     dom.addClass(subContainer, 'blocklyRTL');
   }
 
+  // See: https://stackoverflow.com/a/48590836 for a reference.
+  const ariaAnnouncementSpan = document.createElement('span');
+  ariaAnnouncementSpan.id = 'blocklyAriaAnnounce';
+  aria.setState(ariaAnnouncementSpan, aria.State.LIVE, 'polite');
+  subContainer.appendChild(ariaAnnouncementSpan);
+
   containerElement!.appendChild(subContainer);
   const svg = createDom(subContainer, options);
 

@@ -6,7 +6,7 @@
 
 // Former goog.module ID: Blockly.utils.dom
 
-import * as aria from '../utils/aria.js';
+import * as aria from './aria.js';
 import {Svg} from './svg.js';
 
 /**
