@@ -263,6 +263,17 @@ export class FieldImage extends Field<string> {
     return this.altText;
   }
 
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.IMAGE;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    // TODO: This one is used unexpectedly (such as for string input). May need special casing.
+    return this.name ? `Image ${this.name}` : 'Image';
+  }
+
   /**
    * Construct a FieldImage from a JSON arg object,
    * dereferencing any string table references.

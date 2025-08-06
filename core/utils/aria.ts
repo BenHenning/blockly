@@ -46,11 +46,14 @@ export enum Role {
   // ARIA role for a live region providing information.
   STATUS = 'status',
 
+  REGION = 'region',
   IMAGE = 'image',
   FIGURE = 'figure',
   BUTTON = 'button',
   CHECKBOX = 'checkbox',
   TEXTBOX = 'textbox',
+
+  APPLICATION = 'application',
 }
 
 /**
@@ -108,15 +111,19 @@ export enum State {
   HIDDEN = 'hidden',
 
   ROLEDESCRIPTION = 'roledescription',
+
+  ATOMIC = 'atomic',
+
   OWNS = 'owns',
 }
 
 /**
  * Updates the specific role for the specified element.
  *
- * @param element The element whose ARIA role should be changed.
- * @param roleName The new role for the specified element, or null if its role
- *     should be cleared.
+ * Similar to Closure's goog.a11y.aria
+ *
+ * @param element DOM node to set role of, or null to remove any set role.
+ * @param roleName Role name.
  */
 export function setRole(element: Element, roleName: Role | null) {
   if (roleName) {
@@ -124,13 +131,6 @@ export function setRole(element: Element, roleName: Role | null) {
   } else element.removeAttribute(ROLE_ATTRIBUTE);
 }
 
-/**
- * Returns the ARIA role of the specified element, or null if it either doesn't
- * have a designated role or if that role is unknown.
- *
- * @param element The element from which to retrieve its ARIA role.
- * @returns The ARIA role of the element, or null if undefined or unknown.
- */
 export function getRole(element: Element): Role | null {
   // This is an unsafe cast which is why it needs to be checked to ensure that
   // it references a valid role.
@@ -165,18 +165,6 @@ export function setState(
   element.setAttribute(attrStateName, `${value}`);
 }
 
-/**
- * Returns a string representation of the specified state for the specified
- * element, or null if it's not defined or specified.
- *
- * Note that an explicit set state of 'null' will return the 'null' string, not
- * the value null.
- *
- * @param element The element whose state is being retrieved.
- * @param stateName The state to retrieve.
- * @returns The string representation of the requested state for the specified
- *     element, or null if not defined.
- */
 export function getState(element: Element, stateName: State): string | null {
   const attrStateName = ARIA_PREFIX + stateName;
   return element.getAttribute(attrStateName);

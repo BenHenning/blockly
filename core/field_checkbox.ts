@@ -208,6 +208,16 @@ export class FieldCheckbox extends Field<CheckboxBool> {
     return String(this.convertValueToBool(this.value_));
   }
 
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.CHECKBOX;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return this.name ? `Checkbox ${this.name}` : 'Checkbox';
+  }
+
   /**
    * Convert a value into a pure boolean.
    *

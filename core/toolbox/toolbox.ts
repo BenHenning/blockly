@@ -193,7 +193,19 @@ export class Toolbox
     svg.parentNode!.insertBefore(container, svg);
 
     this.attachEvents_(container, this.contentsDiv_);
+    aria.setRole(container, this.getAriaRole());
     return container;
+  }
+
+  public recomputeAriaOwners() {
+    const focusable = this.getFocusableElement();
+    const selectableChildren = this.getToolboxItems().filter((item) => item.isSelectable()) ?? null;
+    const focusableChildElems = selectableChildren.map((selectable) => selectable.getFocusableElement());
+    const focusableChildIds = focusableChildElems.map((elem) => elem.id);
+    focusable.setAttribute('aria-owns', [... new Set(focusableChildIds)].join(' '));
+    // Ensure children have the correct position set.
+    // TODO: Fix collapsible subcategories. Their groups aren't set up correctly yet, and they aren't getting a correct accounting in top-level toolbox tree.
+    focusableChildElems.forEach((elem, index) => elem.setAttribute('aria-posinset', `${index + 1}`));
   }
 
   /**
@@ -1101,6 +1113,16 @@ export class Toolbox
     return true;
   }
 
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.TREE;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return 'Toolbox';
+  }
+
   /** See IFocusableTree.getRootFocusableNode. */
   getRootFocusableNode(): IFocusableNode {
     return this;
@@ -1125,7 +1147,7 @@ export class Toolbox
 
   /** See IFocusableTree.lookUpFocusableNode. */
   lookUpFocusableNode(id: string): IFocusableNode | null {
-    return this.getToolboxItemById(id) as IFocusableNode;
+    return this.getToolboxItemById(id);
   }
 
   /** See IFocusableTree.onTreeFocus. */

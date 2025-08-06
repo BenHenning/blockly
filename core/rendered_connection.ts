@@ -659,6 +659,16 @@ export class RenderedConnection
     return true;
   }
 
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.FIGURE;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return 'Open connection';
+  }
+
   private findHighlightSvg(): SVGElement | null {
     // This cast is valid as TypeScript's definition is wrong. See:
     // https://github.com/microsoft/TypeScript/issues/60996.

@@ -15,6 +15,7 @@ import type {IHasBubble} from '../interfaces/i_has_bubble.js';
 import {ISelectable} from '../interfaces/i_selectable.js';
 import {ContainerRegion} from '../metrics_manager.js';
 import {Scrollbar} from '../scrollbar.js';
+import { aria } from '../utils.js';
 import {Coordinate} from '../utils/coordinate.js';
 import * as dom from '../utils/dom.js';
 import * as idGenerator from '../utils/idgenerator.js';
@@ -717,6 +718,16 @@ export abstract class Bubble implements IBubble, ISelectable, IFocusableNode {
   /** See IFocusableNode.canBeFocused. */
   canBeFocused(): boolean {
     return true;
+  }
+
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.GROUP;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return 'Bubble';
   }
 
   /**

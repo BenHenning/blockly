@@ -155,6 +155,16 @@ export class CollapsibleToolboxCategory
     return this.htmlDiv_!;
   }
 
+  override initAria(): void {
+    super.initAria();
+
+    // Ensure this group has properly set children.
+    const focusable = this.getFocusableElement();
+    const selectableChildren = this.getChildToolboxItems().filter((item) => item.isSelectable()) ?? null;
+    const focusableChildIds = selectableChildren.map((selectable) => selectable.getFocusableElement().id);
+    focusable.setAttribute('aria-owns', [... new Set(focusableChildIds)].join(' '));
+  }
+
   override createIconDom_() {
     const toolboxIcon = document.createElement('span');
     if (!this.parentToolbox_.isHorizontal()) {
@@ -262,6 +272,10 @@ export class CollapsibleToolboxCategory
 
   override getDiv() {
     return this.htmlDiv_;
+  }
+
+  override getAriaRole(): aria.Role | null {
+    return aria.Role.GROUP;
   }
 
   /**

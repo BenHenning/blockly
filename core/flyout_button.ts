@@ -411,6 +411,16 @@ export class FlyoutButton
   canBeFocused(): boolean {
     return true;
   }
+
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.BUTTON;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return 'Button';
+  }
 }
 
 /** CSS for buttons and labels. See css.js for use. */

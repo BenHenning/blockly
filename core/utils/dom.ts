@@ -55,6 +55,7 @@ export function createSvgElement<T extends SVGElement>(
   name: string | Svg<T>,
   attrs: {[key: string]: string | number},
   opt_parent?: Element | null,
+  ariaRole?: aria.Role
 ): T {
   const e = document.createElementNS(SVG_NS, `${name}`) as T;
   for (const key in attrs) {
@@ -63,7 +64,10 @@ export function createSvgElement<T extends SVGElement>(
   if (opt_parent) {
     opt_parent.appendChild(e);
   }
-  if (name === Svg.SVG || name === Svg.G) {
+  if (ariaRole) {
+    aria.setRole(e, ariaRole);
+  } else if (name === Svg.G || name === Svg.SVG) {
+    // TODO: Figure out a clean way to do this, this way is a bit ugly. Perhaps createSvgElement() specialization based on type?
     aria.setRole(e, aria.Role.PRESENTATION);
   }
   return e;

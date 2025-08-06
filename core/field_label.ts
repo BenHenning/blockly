@@ -118,6 +118,18 @@ export class FieldLabel extends Field<string> {
     this.class = cssClass;
   }
 
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    // There's no additional semantic meaning needed for a label; the aria-label
+    // should be sufficient for context.
+    return null;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return this.getText();
+  }
+
   override setValue(newValue: any, fireChangeEvent?: boolean): void {
     super.setValue(newValue, fireChangeEvent);
     if (this.fieldGroup_) {

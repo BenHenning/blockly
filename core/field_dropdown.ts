@@ -311,7 +311,6 @@ export class FieldDropdown extends Field<string> {
       throw new UnattachedFieldError();
     }
     const menu = new Menu();
-    menu.setRole(aria.Role.LISTBOX);
     this.menu_ = menu;
 
     const options = this.getOptions(false);
@@ -827,6 +826,16 @@ export class FieldDropdown extends Field<string> {
     if (foundError) {
       throw TypeError('Found invalid FieldDropdown options.');
     }
+  }
+
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.LISTBOX;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return this.name ? `Item ${this.name}` : 'Item';
   }
 }
 

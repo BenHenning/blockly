@@ -85,6 +85,13 @@ export function inject(
     common.globalShortcutHandler,
   );
 
+  // See: https://stackoverflow.com/a/48590836 for a reference.
+  // TODO: Figure out a cleaner way to do this.
+  const ariaAnnouncementSpan = document.createElement('span');
+  ariaAnnouncementSpan.id = 'blocklyAriaAnnounce';
+  aria.setState(ariaAnnouncementSpan, aria.State.LIVE, 'polite');
+  subContainer.appendChild(ariaAnnouncementSpan);
+
   return workspace;
 }
 

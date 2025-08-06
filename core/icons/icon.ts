@@ -182,6 +182,16 @@ export abstract class Icon implements IIcon {
     return true;
   }
 
+  /** See IFocusableNode.getAriaRole. */
+  getAriaRole(): aria.Role | null {
+    return aria.Role.FIGURE;
+  }
+
+  /** See IFocusableNode.getAriaLabel. */
+  getAriaLabel(): string {
+    return 'Icon';
+  }
+
   /**
    * Returns the block that this icon is attached to.
    *

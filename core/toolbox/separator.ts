@@ -47,6 +47,7 @@ export class ToolboxSeparator extends ToolboxItem {
 
   override init() {
     this.createDom_();
+    super.initAria();
   }
 
   /**
@@ -78,6 +79,10 @@ export class ToolboxSeparator extends ToolboxItem {
 
   override dispose() {
     dom.removeNode(this.htmlDiv as HTMLDivElement);
+  }
+
+  override getAriaRole(): aria.Role | null {
+    return aria.Role.SEPARATOR;
   }
 }
 
